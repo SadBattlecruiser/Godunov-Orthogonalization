@@ -90,7 +90,7 @@ for i in range(num_of_harmonics):
     eq_class = Diff_eq(k)
     print('Коэффициент нагрузки:', eq_class.load_coeff(smax))
     if (eq_class.load_coeff(smax) != 0.):
-        #yk_func_res = godunov_orthogonalization_solve(eq_class.F, eq_class.F_plus_g, y_begin, y_end, s0, smax, parts, steps)
+        yk_func_res = godunov_orthogonalization_solve(eq_class.F, eq_class.F_plus_g, y_begin, y_end, s0, smax, parts, steps)
         file_name = r'out\harmonic' + str(k) + '.csv'
         print(file_name)
-        #yk_func_res.to_csv(file_name, index = False)
+        yk_func_res.to_csv(file_name, index = False)
