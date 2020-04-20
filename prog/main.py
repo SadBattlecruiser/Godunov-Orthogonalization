@@ -74,7 +74,7 @@ num_of_harmonics = 5
 s0 = 0                                              # Это начало интервала интегрирования
 smax = L / np.sin(pi/2 - np.arctan((r2-r1) / L))    # Это конец интервала интегрирования
 parts = 20                                          # Это на сколько участков делим
-steps = 1000                                        # Это сколько шагов интегрирования на участок
+steps = 2000                                        # Это сколько шагов интегрирования на участок
 # Начальные условия. Которые не знаем - пиши как float('nan')
 y_begin = [0., 0., 0., 0., float('nan'), float('nan'), float('nan'), float('nan')]
 y_end = [0., 0., 0., 0., float('nan'), float('nan'), float('nan'), float('nan')]
@@ -90,7 +90,7 @@ for i in range(num_of_harmonics):
     eq_class = Diff_eq(k)
     print('Коэффициент нагрузки:', eq_class.load_coeff(smax))
     if (eq_class.load_coeff(smax) != 0.):
-        #yk_func_res = godunov_orthogonalization_solve(eq_class.F, eq_class.F_plus_g, y_begin, y_end, s0, smax, parts, steps)
+        yk_func_res = godunov_orthogonalization_solve(eq_class.F, eq_class.F_plus_g, y_begin, y_end, s0, smax, parts, steps)
         file_name = r'out\harmonic' + str(k) + '.csv'
         print(file_name)
-        #yk_func_res.to_csv(file_name, index = False)
+        yk_func_res.to_csv(file_name, index = False)
