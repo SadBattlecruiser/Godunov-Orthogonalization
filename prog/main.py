@@ -39,8 +39,14 @@ class Diff_eq:
     def load_coeff(self, t):
         # Коэффициенты разложения в ряд нагрузки
         # !!! Если 0 - поставь 0, не пропускай
-        coeff_list = [-g*r(t)*ro/pi, -1./2.*g*r(t)*ro, -2./3.*g*r(t)*ro/pi, 0., 2./15.*g*r(t)*ro/pi]
-        return coeff_list[self.k]
+        #coeff_list = [-g*r(t)*ro/pi, -1./2.*g*r(t)*ro, -2./3.*g*r(t)*ro/pi, 0., 2./15.*g*r(t)*ro/pi, 0, -2./35.*g*r(t)*ro/pi, 0, 2./63.*g*r(t)*ro/pi]
+        #return coeff_list[self.k]
+        if (self.k == 0):
+            return -g*r(t)*ro/pi
+        if (self.k == 1):
+            return -1./2.*g*r(t)*ro
+        else:
+            return 2*g*r(t)*ro*np.cos(k*pi/2) / ((-1+k**2)*pi)
 
     def g_vec(self, t):
         return self.load_coeff(t) * np.array([0., 0., 0., 0., 0., 0., -r(t), 0.])
@@ -58,7 +64,7 @@ class Diff_eq:
 
 ###########
 # Даешь данные задачи
-pi = 3.14159265
+pi = np.pi
 h = 0.002
 L = 0.400
 r1 = 0.200
@@ -68,13 +74,13 @@ mu = 0.3
 R1 = 1e20 # Это такая бесконечность
 E = 2e11
 g = 9.81
-num_of_harmonics = 5
+num_of_harmonics = 17
 ###########
 # Параметры
 s0 = 0                                              # Это начало интервала интегрирования
 smax = L / np.sin(pi/2 - np.arctan((r2-r1) / L))    # Это конец интервала интегрирования
 parts = 20                                          # Это на сколько участков делим
-steps = 2000                                        # Это сколько шагов интегрирования на участок
+steps = 200                                         # Это сколько шагов интегрирования на участок
 # Начальные условия. Которые не знаем - пиши как float('nan')
 y_begin = [0., 0., 0., 0., float('nan'), float('nan'), float('nan'), float('nan')]
 y_end = [0., 0., 0., 0., float('nan'), float('nan'), float('nan'), float('nan')]
@@ -84,13 +90,13 @@ y_end = [0., 0., 0., 0., float('nan'), float('nan'), float('nan'), float('nan')]
 
 print('Количество гармоник:\n', num_of_harmonics)
 print('Параметры установлены\n')
-for i in range(num_of_harmonics):
+for i in range(0, num_of_harmonics):
     k = i
     print('Текущая гармоника:', k)
     eq_class = Diff_eq(k)
     print('Коэффициент нагрузки:', eq_class.load_coeff(smax))
-    if (eq_class.load_coeff(smax) != 0.):
-        yk_func_res = godunov_orthogonalization_solve(eq_class.F, eq_class.F_plus_g, y_begin, y_end, s0, smax, parts, steps)
+    if (np.abs(eq_class.load_coeff(smax)) > 1e-10):
+        #yk_func_res = godunov_orthogonalization_solve(eq_class.F, eq_class.F_plus_g, y_begin, y_end, s0, smax, parts, steps)
         file_name = r'out\harmonic' + str(k) + '.csv'
         print(file_name)
-        yk_func_res.to_csv(file_name, index = False)
+        #yk_func_res.to_csv(file_name, index = False)
